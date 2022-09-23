@@ -1,0 +1,29 @@
+@import './value';
+@import './mixin';
+
+* {
+  font-family: Roboto, NotoSansKR, sans-serif;
+  font-weight: $font-weight-regular;
+  font-size: $font-content-normal;
+  //color: $white;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  //color: $white;
+  //background-color: $gray2;
+}
+
+ul,
+ol,
+pre {
+  margin: 0;
+  padding: 0;
+}
+
+ol,
+ul {
+  list-style: none;
+}

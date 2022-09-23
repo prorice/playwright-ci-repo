@@ -1,0 +1,20 @@
+.backoffice-component-grid {
+  display: flex;
+  height: 400px;
+
+  .editable-success {
+    @include add-background-opacity($green2, 0.3);
+
+    &.MuiDataGrid-row:hover {
+      @include add-background-opacity($green2, 0.8);
+    }
+
+    &.MuiDataGrid-row.Mui-selected {
+      @include add-background-opacity($green2);
+
+      &:hover {
+        @include add-background-opacity($green2, 0.8);
+      }
+    }
+  }
+}

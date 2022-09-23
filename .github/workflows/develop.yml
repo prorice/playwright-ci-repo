@@ -1,0 +1,61 @@
+name: Develop
+
+on:
+  push:
+    branches:
+      - develop
+
+env:
+  CACHED_DEPENDENCY_PATHS: ${{ github.workspace }}/node_modules
+  PREFIX_NAME: backoffice
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: develop
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          registry-url: https://npm.pkg.github.com
+          scope: '@tportio'
+
+      - name: Create .npmrc
+        run: |
+          echo '//npm.pkg.github.com/:_authToken=${{ secrets.NPM_REPO_AUTH_TOKEN }}' >> .npmrc
+          echo '@tportio:registry=https://npm.pkg.github.com/' >> .npmrc
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ${{env.CACHED_DEPENDENCY_PATHS}}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - run: npm run build:dev
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: develop
+
+    steps:
+      - name: Upload to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --exclude '.git*/*' --delete --follow-symlinks
+        env:
+          SOURCE_DIR: ./dist
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_S3_BUCKET: backoffice.dapi.tport.dev
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

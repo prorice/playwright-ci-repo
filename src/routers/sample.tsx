@@ -5,7 +5,6 @@ import ViewAlert from '@/views/sample/alert';
 import ViewButton from '@/views/sample/button';
 import ViewCheckbox from '@/views/sample/checkbox';
 import ViewDataGrid from '@/views/sample/data-grid';
-import ViewDialog from '@/views/sample/dialog';
 import ViewInput from '@/views/sample/input';
 import ViewSwitch from '@/views/sample/switch';
 import ViewRadio from '@/views/sample/radio';
@@ -32,7 +31,6 @@ const RouterSample: IRouter = {
     { path: 'tooltip', element: <ViewTooltip /> },
     { path: 'chip', element: <ViewChip /> },
     { path: 'data-grid', element: <ViewDataGrid /> },
-    { path: 'dialog', element: <ViewDialog /> },
     { path: 'progress', element: <ViewProgress /> },
     { path: 'list', element: <ViewList /> },
     { path: 'select', element: <ViewSelect /> },

@@ -6,12 +6,12 @@ on:
       - develop
 
 env:
-  CACHED_NODE_MODULES_DEPENDENCY_PATHS: ${{ github.workspace }}/node_modules
+  CACHED_DEPENDENCY_PATHS: ${{ github.workspace }}/node_modules
 
 jobs:
-  install_dependency:
+  build:
     runs-on: ubuntu-latest
-    name: Install Dependency
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -20,70 +20,28 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          registry-url: https://npm.pkg.github.com
-          scope: '@tportio'
 
-      - name: Create .npmrc
-        run: |
-          echo '//npm.pkg.github.com/:_authToken=${{ secrets.NPM_REPO_AUTH_TOKEN }}' >> .npmrc
-          echo '@tportio:registry=https://npm.pkg.github.com/' >> .npmrc
+      - uses: microsoft/playwright-github-action@v1
 
-      - name: Compute dependency cache key
-        id: compute_lockfile_hash
-        run: echo "::set-output name=hash::${{ hashFiles('package-lock.json') }}"
-
-      - name: Check Node dependency cache
+      - name: Cache node modules
+        id: cache-npm
         uses: actions/cache@v3
-        id: cache_dependencies
+        env:
+          cache-name: cache-node-modules
         with:
-          path: ${{ env.CACHED_NODE_MODULES_DEPENDENCY_PATHS }}
-          key: ${{ steps.compute_lockfile_hash.outputs.hash }}
+          path: ${{env.CACHED_DEPENDENCY_PATHS}}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
-        if: steps.cache_dependencies.outputs.cache-hit != 'true'
+      - if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
 
-    outputs:
-      dependency_node_cache_key: ${{ steps.compute_lockfile_hash.outputs.hash }}
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
-  build:
-    runs-on: ubuntu-latest
-    name: Run Lint
-    needs: install_dependency
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-
-      - name: Check Node dependency cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.CACHED_NODE_MODULES_DEPENDENCY_PATHS }}
-          key: ${{ needs.install_dependency.outputs.dependency_node_cache_key }}
-
-      - name: Run lint
-        run: npm run lint
-
-  playwright:
-    runs-on: ubuntu-latest
-    name: Run Playwright
-    needs: install_dependency
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-
-      - name: Check Node dependency Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.CACHED_NODE_MODULES_DEPENDENCY_PATHS }}
-          key: ${{ needs.install_dependency.outputs.dependency_node_cache_key }}
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps chromium
-
-      - name: Run Playwright Test
+      - name: Install Playwright tests
         run: npx playwright test
 
-      - name: Create Playwright Report
+      - name: Run Playwright tests
         uses: actions/upload-artifact@v2
         if: always()
         with:

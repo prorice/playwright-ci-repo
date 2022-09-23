@@ -26,7 +26,6 @@
   },
   "plugins": ["react", "react-hooks"],
   "extends": [
-    "@tportio/eslint-config",
     "airbnb",
     "airbnb/hooks",
     "eslint:recommended",
@@ -68,6 +67,8 @@
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/consistent-type-assertions": "off",
+    "@typescript-eslint/typedef": ["off"],
+    "jest/no-standalone-expect": ["off"],
     "import/prefer-default-export": "off",
     "import/extensions": ["off"],
     "no-param-reassign": [2, { "props": false }],

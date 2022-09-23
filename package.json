@@ -9,8 +9,10 @@
     "build:dev": "tsc && vite build",
     "build:prod": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,tsx}\" --fix",
-    "prepare": "if [ \"$NODE_ENV\" != production ]; then husky install; fi"
+    "lint": "eslint \"{src,apps,libs,tests}/**/*.{ts,tsx}\" --fix",
+    "prepare": "if [ \"$NODE_ENV\" != production ]; then husky install; fi",
+    "test": "npx playwright test",
+    "test:e2e": "start-server-and-test dev http://localhost:8080 test"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
@@ -37,7 +39,6 @@
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
     "@playwright/test": "^1.24.2",
-    "@tportio/eslint-config": "^0.1.2",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.32.0",
@@ -62,6 +63,7 @@
     "prettier": "^2.7.1",
     "redux-devtools-extension": "^2.13.9",
     "sass": "^1.54.1",
+    "start-server-and-test": "^1.14.0",
     "typescript": "^4.6.4",
     "vite": "^3.0.0",
     "vite-plugin-eslint": "^1.7.0",
@@ -85,10 +87,10 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx}": [
+    "{src, tests}/**/*.{ts,tsx}": [
       "eslint --ext .tsx --ext .ts ./src --fix"
     ],
-    "./src/**": [
+    "./{src, tests}/**": [
       "prettier --write ."
     ]
   },

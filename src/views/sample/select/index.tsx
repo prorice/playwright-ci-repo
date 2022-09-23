@@ -124,8 +124,10 @@ function SampleSelect() {
             <CardContent>
               <Box>
                 <h2>Basic Select</h2>
+                <h2>age = {age}</h2>
                 <h3>MenuItem</h3>
                 <Select
+                  id="select"
                   formControlProps={{
                     sx: { m: 1, minWidth: 150 },
                   }}

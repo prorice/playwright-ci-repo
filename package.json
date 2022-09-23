@@ -11,8 +11,7 @@
     "preview": "vite preview",
     "lint": "eslint \"{src,apps,libs,tests}/**/*.{ts,tsx}\" --fix",
     "prepare": "if [ \"$NODE_ENV\" != production ]; then husky install; fi",
-    "test": "npx playwright test",
-    "test:e2e": "start-server-and-test dev http://localhost:8080 test"
+    "test": "npx playwright test"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",

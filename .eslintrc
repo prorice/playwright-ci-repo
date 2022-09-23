@@ -26,7 +26,6 @@
   },
   "plugins": ["react", "react-hooks"],
   "extends": [
-    "@tportio/eslint-config",
     "airbnb",
     "airbnb/hooks",
     "eslint:recommended",

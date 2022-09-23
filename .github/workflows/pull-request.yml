@@ -20,13 +20,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          registry-url: https://npm.pkg.github.com
-          scope: '@tportio'
-
-      - name: Create .npmrc
-        run: |
-          echo '//npm.pkg.github.com/:_authToken=${{ secrets.NPM_REPO_AUTH_TOKEN }}' >> .npmrc
-          echo '@tportio:registry=https://npm.pkg.github.com/' >> .npmrc
 
       - name: Compute dependency cache key
         id: compute_lockfile_hash
